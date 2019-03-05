@@ -5,8 +5,7 @@ import { updateNewTaskText, addTask } from '../actions';
 
 const mapStateToProps = (state) => {
   const props = {
-    tasks: state.tasks,
-    text: state.text
+    text: state.text,
   };
   return props;
 };
@@ -20,13 +19,13 @@ class NewTaskForm extends React.Component {
   handleInput = e => {
     e.preventDefault();
     const { updateNewTaskText } = this.props;
-    updateNewTaskText(e.target.value);
+    updateNewTaskText({ text: e.target.value });
   };
 
   handleTask = e => {
     e.preventDefault();
     const { addTask, text } = this.props;
-    const task = { [_.uniqueId('task_')]: text };
+    const task = { text, id:_.uniqueId('task_'), state: 'active' };
     addTask(task);
   };
 
