@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { removeTask } from '../actions';
+import { removeTask, toggleTaskState } from '../actions';
 
 const mapStateToProps = (state) => {
   const props = {
@@ -12,6 +12,7 @@ const mapStateToProps = (state) => {
 
 const actionCreator = {
   removeTask: removeTask,
+  toggleTaskState: toggleTaskState,
 }
 
 class Tasks extends React.Component {
@@ -22,6 +23,11 @@ class Tasks extends React.Component {
     removeTask({ id });
   };
 
+  handleToggleTaskState = id => () => {
+    const { toggleTaskState } = this.props;
+    toggleTaskState({ id });
+  };
+
   render() {
     const { tasks } = this.props;
     return (
@@ -30,7 +36,7 @@ class Tasks extends React.Component {
           {tasks.map(({ id, text, state }) => (
             <li key={id} className="list-group-item d-flex">
               <span className="mr-auto">
-                <a href="#" data-test="task-toggle-state">
+                <a href="#" data-test="task-toggle-state" onClick={this.handleToggleTaskState(id)}>
                   {state === 'active' ? text : <s>{text}</s>}
                 </a>
               </span>
