@@ -1,31 +1,56 @@
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
-import { updateNewTaskText, addTask, removeTask, toggleTaskState } from '../actions';
+import * as actions from '../actions';
 import _ from 'lodash';
 
 const tasks = handleActions({
-  [addTask](state, { payload }) {
+  [actions.addTask]: (state, action) => {
     const { byId, allIds } = state;
+    const { task } = action.payload;
     return {
-      byId: { [payload.id]: payload, ...byId },
-      allIds: [payload.id, ...allIds],
+      byId: { ...byId, [task.id]: task },
+      allIds: [task.id, ...allIds],
     };
   },
-  [removeTask](state, { payload: { id } }) {
-    const posts = _.omit(state.byId, id)
-    return ({ ...state, byId: posts });
+  [actions.removeTask]: (state, action) => {
+    const { id } = action.payload;
+    const { byId, allIds } = state;
+    return { 
+      byId: _.omit(byId, id), 
+      allIds: _.without(allIds, id),
+    };
   },
-  [toggleTaskState](state, { payload: { id } })  {
-    state.byId[id].state = state.byId[id].state === 'active' ? 'passive' : 'active';
-    return {...state};
+
+  [actions.toggleTaskState](state, { payload: { id } })  {
+    const task = state.byId[id];
+    const newState = task.state === 'active' ? 'completed' : 'active'; 
+    const updatedTask = { ...task, state: newState };
+    return {
+      ...state,
+      byId: { ...state.byId, [task.id]: updatedTask },
+    };
   }
 }, { byId: {}, allIds: [] });
 
+const tasksUIState = handleActions({
+  [actions.addTask](state, { payload: { task } }) {
+    return { ...state, [task.id]: { theme: 'light' } };
+  },
+  [actions.inverseTaskTheme](state, { payload: { task } }) {
+    const currentTheme = state[task.id].theme;
+    const mapping = {
+      dark: 'light',
+      light: 'dark',
+    };
+    return { ...state, [task.id]: { theme: mapping[currentTheme] } };
+  },
+}, {});
+
 const text = handleActions({
-  [updateNewTaskText](state, { payload: { text } }) {
+  [actions.updateNewTaskText](state, { payload: { text } }) {
     return text;
   },
-  [addTask](state) {
+  [actions.addTask](state) {
     return '';
   },
 }, '');
