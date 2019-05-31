@@ -26,7 +26,7 @@ class NewTaskForm extends React.Component {
     e.preventDefault();
     const { addTask, text } = this.props;
     const task = { text, id:_.uniqueId('task_'), state: 'active' };
-    addTask(task);
+    addTask({ task });
   };
 
   render() {
