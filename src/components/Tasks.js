@@ -13,12 +13,11 @@ const mapStateToProps = (state) => {
 const actionCreator = {
   removeTask: actions.removeTask,
   toggleTaskState: actions.toggleTaskState,
-  inverseTaskTheme: actions.inverseTaskTheme,
 };
 
 class Tasks extends React.Component {
   
-  handleRemove = id => e => {
+  handleRemove = id => (e) => {
     e.preventDefault();
     const { removeTask } = this.props;
     removeTask({ id });
@@ -28,7 +27,6 @@ class Tasks extends React.Component {
     const { toggleTaskState } = this.props;
     toggleTaskState({ id });
   };
-
 
   renderTask = ({ id, text, state }) => {
     const itemClass = cn({

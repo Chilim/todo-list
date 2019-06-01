@@ -21,7 +21,7 @@ const tasks = handleActions({
     };
   },
 
-  [actions.toggleTaskState](state, { payload: { id } })  {
+  [actions.toggleTaskState]: (state, { payload: { id } }) =>  {
     const task = state.byId[id];
     const newState = task.state === 'active' ? 'completed' : 'active'; 
     const updatedTask = { ...task, state: newState };
@@ -32,27 +32,12 @@ const tasks = handleActions({
   }
 }, { byId: {}, allIds: [] });
 
-const tasksUIState = handleActions({
-  [actions.addTask](state, { payload: { task } }) {
-    return { ...state, [task.id]: { theme: 'light' } };
-  },
-  [actions.inverseTaskTheme](state, { payload: { task } }) {
-    const currentTheme = state[task.id].theme;
-    const mapping = {
-      dark: 'light',
-      light: 'dark',
-    };
-    return { ...state, [task.id]: { theme: mapping[currentTheme] } };
-  },
-}, {});
-
 const text = handleActions({
-  [actions.updateNewTaskText](state, { payload: { text } }) {
+  [actions.updateNewTaskText]: (state, { payload: { text } }) => {
     return text;
   },
-  [actions.addTask](state) {
-    return '';
-  },
+
+  [actions.addTask]: () => '',
 }, '');
 
 export default combineReducers({
