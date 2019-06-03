@@ -1,14 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import cn from 'classnames';
 import * as actions from '../actions';
+import { filteredTasksSelector } from '../selectors';
 
 const mapStateToProps = (state) => {
-  const { tasks: { byId, allIds } } = state;
-  const tasks = allIds.map(id => byId[id]);
+  const tasks = filteredTasksSelector(state);
   return { tasks };
-};
+}
 
 const actionCreator = {
   removeTask: actions.removeTask,
@@ -16,9 +15,7 @@ const actionCreator = {
 };
 
 class Tasks extends React.Component {
-  
-  handleRemove = id => (e) => {
-    e.preventDefault();
+  handleRemove = id => () => {
     const { removeTask } = this.props;
     removeTask({ id });
   };
@@ -34,12 +31,11 @@ class Tasks extends React.Component {
       'bg-dark text-light': state !== 'active',
       'bg-light text-dark': state === 'active',
     });
-
     return (
         <li key={id} className={itemClass}>
           <span className="mr-auto">
             <a href="#" data-test="task-toggle-state" onClick={this.handleToggleTaskState(id)}>
-              {state === 'active' ? text : <s>{text}</s>}
+              {text}
             </a>
           </span>
           <button type="button" data-test="task-remove" className="close" onClick={this.handleRemove(id)}>
