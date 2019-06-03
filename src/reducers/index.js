@@ -8,6 +8,7 @@ const tasks = handleActions({
     const { byId, allIds } = state;
     const { task } = action.payload;
     return {
+      ...state,
       byId: { ...byId, [task.id]: task },
       allIds: [task.id, ...allIds],
     };
@@ -15,7 +16,8 @@ const tasks = handleActions({
   [actions.removeTask]: (state, action) => {
     const { id } = action.payload;
     const { byId, allIds } = state;
-    return { 
+    return {
+      ...state, 
       byId: _.omit(byId, id), 
       allIds: _.without(allIds, id),
     };
@@ -23,14 +25,15 @@ const tasks = handleActions({
 
   [actions.toggleTaskState]: (state, { payload: { id } }) =>  {
     const task = state.byId[id];
-    const newState = task.state === 'active' ? 'completed' : 'active'; 
+    const newState = task.state === 'active' ? 'finished' : 'active'; 
     const updatedTask = { ...task, state: newState };
     return {
       ...state,
       byId: { ...state.byId, [task.id]: updatedTask },
     };
-  }
-}, { byId: {}, allIds: [] });
+  },
+  [actions.setTasksFilter]: (state, { payload: { filterName } }) => ({ ...state, currentFilterName: filterName }),
+}, { byId: {}, allIds: [], currentFilterName: 'all' });
 
 const text = handleActions({
   [actions.updateNewTaskText]: (state, { payload: { text } }) => {
