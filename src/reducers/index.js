@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
+import { reducer as formReducer } from 'redux-form';
 import * as actions from '../actions';
 import _ from 'lodash';
 
@@ -45,5 +46,6 @@ const text = handleActions({
 
 export default combineReducers({
   text,
+  form: formReducer,
   tasks
 });
