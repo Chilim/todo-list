@@ -1,45 +1,33 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { updateNewTaskText, addTask } from '../actions';
+import { Field, reduxForm } from 'redux-form';
+import { addTask } from '../actions';
 
 const mapStateToProps = (state) => {
-  const props = {
-    text: state.text,
-  };
+  const props = {};
   return props;
 };
 
 const actionCreators = {
-  updateNewTaskText: updateNewTaskText,
   addTask: addTask,
 };
 
 class NewTaskForm extends React.Component {
-  handleInput = e => {
-    e.preventDefault();
-    const { updateNewTaskText } = this.props;
-    updateNewTaskText({ text: e.target.value });
-  };
 
-  handleTask = e => {
-    e.preventDefault();
-    const { addTask, text } = this.props;
-    const task = { text, id:_.uniqueId('task_'), state: 'active' };
+  handleAddTask = (values) => {
+    const { addTask, reset } = this.props;
+    const task = { ...values, id: _.uniqueId(), state: 'active' };
     addTask({ task });
-  };
+    reset();
+  }
 
   render() {
-    const { text } = this.props;
+    const { handleSubmit } = this.props;
     return (
-      <form action="" className="form-inline" onSubmit={this.handleTask}>
+      <form className="form-inline" onSubmit={handleSubmit(this.handleAddTask)}>
         <div className="form-group mx-sm-3">
-          <input
-            type="text"
-            required
-            value={text}
-            onChange={this.handleInput}
-          />
+          <Field name="text" required component="input" type="text" />
         </div>
         <input type="submit" className="btn btn-primary btn-sm" value="Add" />
       </form>
@@ -47,4 +35,8 @@ class NewTaskForm extends React.Component {
   }  
 };
 
-export default connect(mapStateToProps, actionCreators)(NewTaskForm);
+const ConnectedNewTaskForm = connect(mapStateToProps, actionCreators)(NewTaskForm);
+
+export default reduxForm({
+  form: 'newTask',
+})(ConnectedNewTaskForm);
